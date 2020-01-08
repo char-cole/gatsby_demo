@@ -1,21 +1,66 @@
-import React from "react"
-import { Link } from "gatsby"
+import React from 'react';
+import { Link, graphql } from 'gatsby';
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+const IndexPage = ({ data }) => {
+    const plansArray = data.plansAPI.getPlans;
+    return (
+        <Layout>
+            <SEO title="Home" />
+            <h1>medicare</h1>
+            <p>
+                This is a Gatsby site serving up a homegrown, local Node server.
+                You can buy real health insurance here.
+            </p>
+            <p>
+                Here are you plans available to you personally, selected by our algorithm that reads your browser settings:
+            </p>
+            {plansArray.map(p => {
+                return (
+                    <React.Fragment>
+                        <h2>{p.name}</h2>
+                        <h4>average cost: ${p.cost}/month</h4>
+                        <ul>
+                            {Object.keys(p.coverage).map(item => {
+                                return (
+                                    <li>
+                                        Covers thing <b>{item.toUpperCase()}</b>
+                                        ?<br />
+                                        <i>
+                                            {p.coverage[item]
+                                                ? 'sure does'
+                                                : 'lol nah dude'}
+                                        </i>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </React.Fragment>
+                );
+            })}
+            <footer>
+                <Link to="/page-2/">Go to page 2</Link>
+            </footer>
+        </Layout>
+    );
+};
 
-export default IndexPage
+export default IndexPage;
+
+export const query = graphql`
+    {
+        plansAPI {
+            getPlans(ids: [1, 2]) {
+                name
+                cost
+                coverage {
+                    a
+                    b
+                    c
+                }
+            }
+        }
+    }
+`;
