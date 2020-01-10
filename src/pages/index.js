@@ -15,24 +15,27 @@ const IndexPage = ({ data }) => {
                 You can buy real health insurance here.
             </p>
             <p>
-                Here are you plans available to you personally, selected by our algorithm that reads your browser settings:
+                Here are you plans available to you personally, selected by our
+                algorithm that reads your browser settings:
             </p>
             {plansArray.map(p => {
                 return (
                     <React.Fragment>
-                        <h2>{p.name}</h2>
-                        <h4>average cost: ${p.cost}/month</h4>
+                        <h2>
+                            Plan&nbsp;
+                            {p.id.length === 1
+                                ? p.id
+                                : p.id[0] + ' High Deductible'}
+                        </h2>
                         <ul>
-                            {Object.keys(p.coverage).map(item => {
+                            {Object.keys(p).map((item, indx) => {
+                                if (item === 'id' || indx > 5) return null;
                                 return (
                                     <li>
-                                        Covers thing <b>{item.toUpperCase()}</b>
-                                        ?<br />
-                                        <i>
-                                            {p.coverage[item]
-                                                ? 'sure does'
-                                                : 'lol nah dude'}
-                                        </i>
+                                        <h5 style={{ margin: '0px' }}>
+                                            {item.toUpperCase()}
+                                        </h5>
+                                        <div>{p[item]}</div>
                                     </li>
                                 );
                             })}
@@ -52,14 +55,28 @@ export default IndexPage;
 export const query = graphql`
     {
         plansAPI {
-            getPlans(ids: [1, 2]) {
-                name
-                cost
-                coverage {
-                    a
-                    b
-                    c
-                }
+            getPlans(ids: ["a", "b", "g", "gh"]) {
+                id
+                primaryDoctor
+                specialist
+                emergencyRoom
+                labXRay
+                outpatientSurgery
+                hospitalization
+                outpatient
+                periodicExamCoverage
+                outOfPocketLimit
+                prescriptionDrugCoverage
+                ambulanceServices
+                urgentCare
+                skilledNursingFacility
+                homeHealthCare
+                hospice
+                dentalServices
+                hearingServices
+                visionServices
+                primaryOfficeVisit
+                specialistOfficeVisit
             }
         }
     }
